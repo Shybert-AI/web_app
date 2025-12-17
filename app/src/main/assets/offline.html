@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络离线 - 灵犀AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .offline-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 100px;
+            text-align: center;
+        }
+
+        .offline-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .offline-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .offline-description {
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .retry-button {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 25px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .retry-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tips {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+        }
+
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .tip-item {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        /* 底部导航栏 - 静态样式 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            flex: 1;
+            padding: 8px 0;
+            cursor: default; /* 改为默认光标，表示不可点击 */
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-text {
+            font-size: 12px;
+        }
+
+        /* 禁用状态样式 */
+        .nav-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 30px 16px 100px;
+            }
+
+            .offline-icon {
+                font-size: 60px;
+            }
+
+            .offline-title {
+                font-size: 20px;
+            }
+
+            .offline-description {
+                font-size: 14px;
+            }
+
+            .retry-button {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 主要内容区域 -->
+<div class="offline-container">
+    <div class="offline-icon">📶</div>
+    <div class="offline-title">网络连接已断开</div>
+    <div class="offline-description">
+        请检查网络连接后重试<br>
+        确保Wi-Fi或移动数据已开启
+    </div>
+
+    <button class="retry-button" onclick="safeRefresh()">
+        刷新页面
+    </button>
+
+    <div class="tips">
+        <span class="tips-title">💡 网络连接提示</span>
+        <span class="tip-item">• 检查Wi-Fi或移动数据开关</span>
+        <span class="tip-item">• 尝试切换网络环境</span>
+        <span class="tip-item">• 重启路由器或设备</span>
+        <span class="tip-item">• 检查信号强度</span>
+    </div>
+</div>
+
+<!-- 底部导航栏 - 静态展示，不可点击 -->
+<div class="bottom-nav">
+    <div class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">首页</span>
+    </div>
+    <div class="nav-item disabled">
+        <span class="nav-icon">💫</span>
+        <span class="nav-text">灵感</span>
+    </div>
+    <div class="nav-item disabled">
+        <span class="nav-icon">🚀</span>
+        <span class="nav-text">创作</span>
+    </div>
+    <div class="nav-item disabled">
+        <span class="nav-icon">🤖</span>
+        <span class="nav-text">AI对话</span>
+    </div>
+    <div class="nav-item disabled">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">我的</span>
+    </div>
+</div>
+
+<script>
+        function safeRefresh() {
+            if (window.AndroidApp) {
+                AndroidApp.safeRefresh();
+            } else {
+                location.reload();
+            }
+        }
+
+        // 显示加载状态
+        function showLoading(message) {
+            // 简单的加载提示
+            const retryButton = document.querySelector('.retry-button');
+            const originalText = retryButton.textContent;
+            retryButton.textContent = message || '加载中...';
+            retryButton.disabled = true;
+
+            // 保存原始文本以便恢复
+            retryButton.setAttribute('data-original-text', originalText);
+        }
+
+        // 隐藏加载状态
+        function hideLoading() {
+            const retryButton = document.querySelector('.retry-button');
+            const originalText = retryButton.getAttribute('data-original-text');
+            if (originalText) {
+                retryButton.textContent = originalText;
+            }
+            retryButton.disabled = false;
+        }
+
+        // 监听网络状态恢复
+        window.addEventListener('online', function() {
+            if (window.AndroidApp && typeof window.AndroidApp.networkRestored === 'function') {
+                window.AndroidApp.networkRestored();
+            } else {
+                showMessage('网络已恢复，正在重新加载...');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+
+        // 显示消息提示
+        function showMessage(message) {
+            // 简单的消息提示
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+            `;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 2000);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('离线页面加载完成');
+
+            // 添加底部导航栏的提示效果
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.classList.contains('disabled')) {
+                    item.addEventListener('click', function() {
+                        showMessage('网络恢复后可使用此功能');
+                    });
+                }
+            });
+        });
+</script>
+</body>
+</html>
