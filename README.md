@@ -7,3 +7,4 @@ private static final String TARGET_URL = "https://app-6xpj2jb3qozl.appmiaoda.com
 # 4.安装apk
 ![img_1.png](img_1.png)
 # 5.手机上运行apk，可以安装我的apk进行体验[e99a7a53343af2af53f7c7f65df3a931.mp4](e99a7a53343af2af53f7c7f65df3a931.mp4)
+![Uploading dcfb2da707368f045d9acf0b5b52a500.jpg…]()
